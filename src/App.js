@@ -1,25 +1,41 @@
-import logo from './logo.svg';
-import './App.css';
+import axios from "axios";
+import { useEffect, useState } from "react";
 
-function App() {
-  return (
+function App(){
+  const [data, setData] = useState([]);
+
+  useEffect(() =>{
+    axios.get(`http://localhost:30009/data`)
+      .then(response =>{
+        setData(response.data)
+      })
+      .catch(error=>{
+        console.error('There was an error fetching the data!', error)
+      })
+  }, [])
+  return(
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+            <h1>Excel Data</h1>
+            <table>
+                <thead>
+                    <tr>
+                        {data.length > 0 && Object.keys(data[0]).map((key, index) => (
+                            <th key={index}>{key}</th>
+                        ))}
+                    </tr>
+                </thead>
+                <tbody>
+                    {data.map((row, index) => (
+                        <tr key={index}>
+                            {Object.values(row).map((value, i) => (
+                                <td key={i}>{value}</td>
+                            ))}
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+        </div>
+  )
 }
 
 export default App;
